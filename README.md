@@ -1,68 +1,40 @@
 
-# RISC-V Singlecycle CPU Starter Code
+# 🏗️ Multicycle RISC-V Processor in Verilog (ECE 154A Final Project)
 
+This project implements a multicycle RISC-V CPU using Verilog HDL, dividing instruction execution across multiple clock cycles for improved hardware efficiency. The design separates control and datapath logic, with a finite state machine (FSM) managing sequential operations. It is developed as part of UCSB’s ECE 154A course on computer architecture.
 
-## Guide to Run ECI ModelSim
+## 🧠 Features
 
-1. Download this directory to ECI.
-2. `cd` to the downloaded directory using a terminal.
-3. Open a terminal and cd to your ECI directory.
-4. Run `make run-gui` to compile your design and open ModelSim
-5. Run simulations as normal.
+- Supports core RISC-V base integer instructions (RV32I)
+- Multicycle control: fetch, decode, execute, memory, and write-back phases
+- Control FSM implemented using Moore machine principles
+- Parametrized datapath with mux-controlled ALU inputs
+- Uses program counter enable (PCEn), address source mux, and write-back logic
+- Read/Write signals issued only in correct states to shared memory
 
-Note that you may have to add this to your `"~/.bashrc"`:
+## 📁 File Structure
 
-```bash
-# ModelSim
-export MODEL_TECH=/ece/mentor/ModelSimSE-10.7d/modeltech/bin
-export PATH=$PATH:$MODEL_TECH
-export LM_LICENSE_FILE=1717@license.ece.ucsb.edu
-```
+| File Name                     | Description                                    |
+|-------------------------------|------------------------------------------------|
+| `ucsbece154a_datapath (1).v`  | Datapath module with control signal decoding   |
+| `ucsbece154a_controller (1).v`| FSM-based controller generating sequenced control signals |
 
-## Implementation Hints
+## 🛠 How to Simulate
 
-Use the following Verilog snippets to generate the specified hardware. You can see how the Verilog is synthesized into a netlist with this website: <https://digitaljs.tilk.eu/>.
+1. Use ModelSim, Vivado, or Verilator to compile both files.
+2. Connect a testbench with instruction memory and register file.
+3. Track cycle-by-cycle behavior to validate:
+   - State transitions (IF, ID, EX, MEM, WB)
+   - ALU result flow
+   - Control signal timing
+   - Correct memory and register access
 
-### 2-Input Muxes
+## 📦 Requirements
 
-```verilog
-// http://www.asic-world.com/verilog/operators2.html#Conditional_Operators
-assign y = (s) ? (a) : (b);
+- Verilog HDL simulator (ModelSim, Verilator, etc.)
+- GTKWave or waveform viewer (optional)
+- Understanding of RISC-V datapath and FSM design
 
-// http://www.asic-world.com/verilog/vbehave2.html#The_Conditional_Statement_if-else
-always @ * begin
-    y = b;
-    if (s)
-        y = a;
-end
+## 👤 Author
 
-// http://www.asic-world.com/verilog/vbehave2.html#The_Case_Statement
-always @ * begin
-    case (s)
-        0: y = a;
-        1: y = b;
-        default: ;
-    endcase
-end
-```
-
-### N-Input Muxes
-
-```verilog
-assign y
-    = (s==0) ? a
-    : (s==1) ? b
-    ....
-    : (s=={n}) ? {value}
-    : x;
-
-always @ * begin
-    case (s)
-        0: y = a;
-        1: y = b;
-        ....
-        {n}: y = {value};
-        default: y = x;
-    endcase
-end
-```
+Yiguang Zhu — ECE 154A Multicycle CPU Project (2024)
